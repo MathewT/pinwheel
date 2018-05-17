@@ -33,6 +33,20 @@ services:
       - esdata2:/usr/share/elasticsearch/data
     networks:
       - esnet
+  node-api:
+    image:  mthomas/node-api
+    container_name: mthomas_node_api
+    depends_on: 
+      - postgres-0
+      - postgres-1
+    links:
+      - postgres-0:db0.local
+      - postgres-1:db1.local
+      - elasticsearch:es0.local
+    ports:
+      - "8888:8888"
+    networks: 
+      - esnet
   postgres-0:
     image: postgres:10.3-alpine
     ports:
