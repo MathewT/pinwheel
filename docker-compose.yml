@@ -47,6 +47,24 @@ services:
       - ../7-6-project/src:/usr/src/app/src
     networks: 
       - esnet
+  node-medusa:
+    image:  mthomas/medusa
+    container_name: medusa
+    depends_on: 
+      - postgres-0
+      - postgres-1
+    links:
+      - postgres-0:db0.local
+      - postgres-1:db1.local
+      - elasticsearch:es0.local
+    volumes:
+      - ../medusa/src:/usr/src/app/src
+    environment:
+      DATABASE_URL: "postgres://postgres:swordfish@db0.local:5432"
+    ports:
+      - "6666:6666"
+    networks: 
+      - esnet
   node-api:
     image:  mthomas/node-api
     container_name: node_api_app
@@ -57,6 +75,8 @@ services:
       - postgres-0:db0.local
       - postgres-1:db1.local
       - elasticsearch:es0.local
+    environment:
+      DATABASE_URL: "postgres://postgres:swordfish@db0.local:5432"
     ports:
       - "8888:8888"
     volumes:
@@ -66,9 +86,9 @@ services:
   postgres-0:
     image: postgres:10.4-alpine
     container_name: postgres_0
-    # working_dir: /sql
-    # volumes:
-    #   - ./sql:/sql
+    working_dir: /sql
+    volumes:
+      - ./sql:/sql
     ports:
       - "5433:5432"
     environment:
