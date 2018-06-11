@@ -34,17 +34,19 @@ services:
     networks:
       - esnet
   ui-app:
-    image:  mthomas/7-6-project
-    container_name: ui_app
+    image:  mthomas/node-web-3
+    container_name: ui_web_3
     depends_on:
       - node-api
     links:
       - node-api:api.local
+      - node-medusa:medusa.local
     ports:
-      - "3000:3000"
-      - "3001:3001"
+      - "8585:8585"
+    environment:
+      PORT: "8585"
     volumes:
-      - ../7-6-project/src:/usr/src/app/src
+      - ../node-web-3/src:/usr/src/app/src
     networks: 
       - esnet
   node-medusa:
@@ -62,12 +64,12 @@ services:
     environment:
       DATABASE_URL: "postgres://postgres:swordfish@db0.local:5432"
     ports:
-      - "6666:6666"
+      - "8080:8080"
     networks: 
       - esnet
   node-api:
     image:  mthomas/node-api
-    container_name: node_api_app
+    container_name: node_api
     depends_on: 
       - postgres-0
       - postgres-1
